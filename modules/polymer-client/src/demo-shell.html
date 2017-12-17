@@ -1,0 +1,162 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<!-- Ensure Web Animations polyfill is loaded since neon-animation 2.0 doesn't import it -->
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-lazy-pages/iron-lazy-pages.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/cuba-app/cuba-app.html">
+<link rel="import" href="../bower_components/cuba-app/cuba-app-aware-behavior.html">
+<link rel="import" href="../bower_components/cuba-app/cuba-localize-behavior.html">
+<link rel="import" href="../bower_components/cuba-styles/cuba-styles.html">
+<link rel="import" href="../bower_components/cuba-data/cuba-data.html">
+<link rel="import" href="../bower_components/cuba-form/cuba-form.html">
+<link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker-light.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="demo-menu.html">
+<link rel="import" href="demo-user-menu.html">
+<link rel="import" href="demo-login.html">
+<link rel="import" href="home/demo-home.html">
+
+
+<dom-module id="demo-shell">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+      app-toolbar {
+        background-color: var(--primary-color);
+        color: #fff;
+      }
+      iron-lazy-pages > * {
+        max-width: 1080px;
+        margin: 12px auto;
+        padding: 12px 24px;
+      }
+      @media (max-width: 1366px) {
+        iron-lazy-pages > * {
+          margin-top: 6px;
+          padding: 6px 12px;
+        }
+      }
+      @media (max-width: 768px) {
+        iron-lazy-pages > * {
+          margin-top: 0;
+          padding: 0;
+        }
+      }
+    </style>
+
+    <cuba-app api-url="[[apiUrl]]"
+              on-cuba-token-expired="_handleTokenExpired">
+    </cuba-app>
+
+
+    <app-location route="{{route}}" use-hash-as-path></app-location>
+    <app-route route="{{route}}"
+               pattern="/:page"
+               data="{{routeData}}"
+               tail="{{routeTail}}">
+    </app-route>
+
+    <template is="dom-if" if="[[!authenticated]]">
+      <demo-login on-cuba-login-success="_handleLogin">
+      </demo-login>
+    </template>
+
+    <template is="dom-if" if="[[authenticated]]" restamp="true">
+      <app-drawer-layout id="drawerLayout" fullbleed>
+
+        <app-drawer id="drawer" slot="drawer">
+          <app-toolbar>
+            <div class="title">[[msg('Polymer-cordova')]]</div>
+          </app-toolbar>
+          <div class="content fit drawer-content">
+            <demo-menu on-menu-navigate="_closeDrawer"></demo-menu>
+          </div>
+        </app-drawer>
+
+        <app-header-layout main>
+          <app-header slot="header" fixed>
+            <app-toolbar class="main-toolbar">
+              <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+              <div main-title></div>
+              <demo-user-menu></demo-user-menu>
+            </app-toolbar>
+          </app-header>
+          <iron-lazy-pages
+            selected="[[_computeSelectedPage(routeData.page)]]"
+            attr-for-selected="data-route"
+            selected-attribute="active"
+            class="content fit">
+              <demo-home data-route=""></demo-home>
+          </iron-lazy-pages>
+        </app-header-layout>
+
+      </app-drawer-layout>
+    </template>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'demo-shell',
+      behaviors: [CubaAppAwareBehavior, CubaLocalizeBehavior],
+      properties: {
+        authenticated: {
+          type: Boolean
+        },
+        apiUrl: {
+          type: String
+        }
+      },
+      observers: [
+        '_init(app)'
+      ],
+      listeners: {
+        'navigate': '_onNavigate'
+      },
+      _init: function (app) {
+        if (this.app.restApiToken) {
+          this.app.loadEnums().then(function() {
+            this.authenticated = true;
+          }.bind(this));
+          this.app.loadEntitiesMessages();
+        } else {
+          this.authenticated = false;
+        }
+      },
+      _handleLogin: function() {
+        this.authenticated = true;
+        this.app.loadEnums();
+        this.app.loadEntitiesMessages();
+      },
+      _handleTokenExpired: function() {
+        this.authenticated = false;
+      },
+      _closeDrawer: function() {
+        this.async(function(){
+          var drawerLayout = this.querySelector('#drawerLayout');
+          if (drawerLayout && drawerLayout.narrow) {
+            this.querySelector('#drawer').close();
+          }
+        }.bind(this));
+      },
+      _computeSelectedPage: function(page) {
+        return page || '';
+      },
+      _onNavigate: function(event, detail) {
+        this.set("route.path", detail);
+      }
+    });
+  </script>
+</dom-module>

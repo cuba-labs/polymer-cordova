@@ -1,0 +1,38 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="demo-locale-select">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    
+    <paper-radio-group selected="[[locale]]" on-selected-changed="_changeLocale">
+      <paper-radio-button name="en">English</paper-radio-button>
+
+    </paper-radio-group>
+    
+  </template>
+  <script>
+    Polymer({
+      is: 'demo-locale-select',
+      properties: {
+        locale: {
+          type: String,
+          value: function() {
+            return cuba.getApp().locale;
+          }
+        }
+      },
+      _changeLocale: function(e,d) {
+        cuba.getApp().locale = d.value;
+      }
+    })
+  </script>
+</dom-module>

@@ -1,0 +1,38 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/cuba-app/cuba-localize-behavior.html">
+<link rel="import" href="../../bower_components/cuba-styles/cuba-styles.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="demo-home">
+  <template>
+    <style include="cuba-styles"></style>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <paper-card heading="[[msg('welcomeHeading')]]" class="page-widget">
+      <div class="card-content">
+        [[msg('welcomeContent')]]
+      </div>
+    </paper-card>
+  </template>
+  <script>
+    Polymer({
+      is: 'demo-home',
+      behaviors: [CubaLocalizeBehavior],
+      properties: {
+        messages: {
+          value: {
+            en: {
+              "welcomeHeading": "Welcome to demo",
+              "welcomeContent": "Some description"
+            }
+          }
+        }
+      }
+    })
+  </script>
+</dom-module>
