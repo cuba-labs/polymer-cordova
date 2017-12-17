@@ -210,6 +210,23 @@ configure(polymerClientModule) {
         into "$cuba.tomcat.dir/webapps/$frontAppDir"
     }
 
+    task prepareCordova(type: Copy, dependsOn: [assemble]) {
+        from file('build/cordova')
+        into "cordova/www"
+    }
+
+    task buildCordova(type: Exec, dependsOn: [prepareCordova]) {
+        commandLine 'cordova'
+        args 'build'
+        workingDir 'cordova'
+    }
+
+    task emulateAndroid(type: Exec, dependsOn: [buildCordova]) {
+        commandLine 'cordova'
+        args 'emulate', 'android'
+        workingDir 'cordova'
+    }
+
     task deploy(type: Copy, dependsOn: [assemble, deployUnbundled]) {
         from file('build/es6-unbundled')
         into "$cuba.tomcat.dir/webapps/$frontAppDir"

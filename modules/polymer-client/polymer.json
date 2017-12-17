@@ -20,6 +20,11 @@
       "preset": "es6-unbundled",
       "basePath": "/app-front/",
       "addServiceWorker": false
+    },
+    {
+      "name": "cordova",
+      "preset": "es5-bundled",
+      "addServiceWorker": false
     }
   ]
 }
