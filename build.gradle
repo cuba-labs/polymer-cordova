@@ -215,15 +215,15 @@ configure(polymerClientModule) {
         into "cordova/www"
     }
 
-    task buildCordova(type: Exec, dependsOn: [prepareCordova]) {
-        commandLine 'cordova'
-        args 'build'
+    task buildCordova(type: NodeTask, dependsOn: [prepareCordova]) {
+        script = file('node_modules/cordova/bin/cordova')
+        args = ['build']
         workingDir 'cordova'
     }
 
-    task emulateAndroid(type: Exec, dependsOn: [buildCordova]) {
-        commandLine 'cordova'
-        args 'emulate', 'android'
+    task emulateAndroid(type: NodeTask, dependsOn: [buildCordova]) {
+        script = file('node_modules/cordova/bin/cordova')
+        args = ['emulate', 'android']
         workingDir 'cordova'
     }
 
