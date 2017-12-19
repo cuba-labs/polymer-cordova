@@ -210,12 +210,20 @@ configure(polymerClientModule) {
         into "$cuba.tomcat.dir/webapps/$frontAppDir"
     }
 
+
+    task installCordovaPackages(type: NpmTask) {
+        args = ['install']
+        execOverrides {
+            it.workingDir = 'cordova'
+        }
+    }
+
     task prepareCordova(type: Copy, dependsOn: [assemble]) {
         from file('build/cordova')
         into "cordova/www"
     }
 
-    task buildCordova(type: NodeTask, dependsOn: [prepareCordova]) {
+    task buildCordova(type: NodeTask, dependsOn: [prepareCordova, installCordovaPackages]) {
         script = file('node_modules/cordova/bin/cordova')
         args = ['build']
         workingDir 'cordova'
