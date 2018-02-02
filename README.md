@@ -1,12 +1,10 @@
-*Work In Progress*
-
 This project is a demonstration on how to wrap CUBA Platform's Polymer Client into the hybrid mobile application
  using [Apache Cordova](https://cordova.apache.org/). 
 
 The video recording of the corresponding webinar is available [here](https://www.cuba-platform.com/webinars/creating-hybrid-mobile-application). 
 
 ## Requirements
-Android SDK should be [installed](https://cordova.apache.org/docs/en/latest/guide/platforms/android/index.html#installing-the-requirements).
+[Android SDK](https://cordova.apache.org/docs/en/latest/guide/platforms/android/index.html#installing-the-requirements) and [Node.js](https://nodejs.org/en/download/) should be installed on your machine.
 
 ## Building Android Application
 ```bash
