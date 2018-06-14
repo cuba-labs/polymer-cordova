@@ -39,8 +39,8 @@
       behaviors: [CubaLocalizeBehavior],
       _logout: function () {
         cuba.getApp().logout().then(function () {
-          window.location.href = document.querySelector('base').href;
-        });
+          this.fire('logout')
+        }.bind(this));
       }
     })
   </script>
